@@ -1,3 +1,5 @@
+// TODO: add a book search with autocomplete from an API inc book art for bg
+
 // let myTestLibrary = [
 //   {
 //     title: 'Hyperion',
@@ -39,13 +41,45 @@ function Book(title, author, pages, read) {
   };
 }
 
+const newBookButton = document.querySelector('.new-book-button');
+
+function addNewBook() {
+  console.log('ok you got here');
+}
+
+// TODO ask for an ISBN and add custom background if provided?
+newBookButton.addEventListener('onClick', addNewBook());
+
 function addBookToLibrary(book) {
   myLibrary.push(book);
 }
 
 function getBookInfo() {
+  const cardContainer = document.querySelector('.card-container');
+
   for (const book of myLibrary) {
-    console.log(book.info());
+    const card = document.createElement('div');
+    card.classList.add('card');
+    const cardTitle = document.createElement('h2');
+    const titleNode = document.createTextNode(book.title);
+    cardTitle.appendChild(titleNode);
+    card.appendChild(cardTitle);
+    const cardAuthor = document.createElement('h3');
+    const authorNode = document.createTextNode(book.author);
+    cardAuthor.appendChild(authorNode);
+    card.appendChild(cardAuthor);
+    const cardPages = document.createElement('p');
+    const pagesNode = document.createTextNode(`Pages: ${book.pages}`);
+    cardPages.appendChild(pagesNode);
+    card.appendChild(cardPages);
+    const cardCompleted = document.createElement('p');
+    const completedNode = document.createTextNode(
+      `Status: ${book.read ? 'Completed' : 'Not Completed'}`
+    );
+    cardCompleted.appendChild(completedNode);
+    card.appendChild(cardCompleted);
+
+    cardContainer.appendChild(card);
   }
 }
 
@@ -69,12 +103,3 @@ addBookToLibrary(endymion);
 addBookToLibrary(riseOfEndymion);
 
 getBookInfo();
-
-const bookContainer = document.getElementById('book-list');
-
-for (const book of myLibrary) {
-  const para = document.createElement('p');
-  const node = document.createTextNode(book.info());
-  para.appendChild(node);
-  bookContainer.appendChild(para);
-}

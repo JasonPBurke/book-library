@@ -1,0 +1,71 @@
+.header1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  padding: 1rem 2rem;
+  background-color: rgb(255, 185, 100);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.75);
+}
+
+.header1 > h1 {
+  margin: 0;
+}
+
+.new-book-button {
+  border-radius: 5px;
+  border: none;
+  padding: 1rem 1.5rem;
+  background-color: rgb(219, 219, 219);
+  box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(0, 0, 0, 0);
+
+  transition: 300ms ease;
+}
+
+.new-book-button:hover {
+  background-color: rgb(208, 208, 208);
+  cursor: pointer;
+}
+
+.new-book-button:focus {
+  border: 1px solid black;
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 0.75fr));
+  justify-content: center;
+}
+
+.card {
+  display: grid;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 400px;
+  margin: 2rem;
+  border: 2px solid rebeccapurple;
+  border-radius: 5px;
+  box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.35);
+  transition: 500ms ease;
+  background-image: url('https://covers.openlibrary.org/b/isbn/9780812511819-L.jpg');
+  background-size: cover;
+  background-color: rgb(219, 219, 219);
+}
+
+.card:hover {
+  scale: 1.05;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.card > * {
+  text-align: center;
+}
+
+.footer {
+  background-color: rgb(255, 185, 100);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.75);
+  text-align: center;
+  padding: 2rem 0;
+  margin-top: 2rem;
+}
