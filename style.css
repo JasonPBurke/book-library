@@ -1,10 +1,25 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.content {
+  flex: 1 0 auto;
+}
+
 .header1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 2rem;
   padding: 1rem 2rem;
-  background-color: rgb(255, 185, 100);
+  background-color: rgb(235, 203, 139);
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.75);
 }
 
@@ -12,6 +27,7 @@
   margin: 0;
 }
 
+.form-buttons-container > button,
 .new-book-button {
   border-radius: 5px;
   border: none;
@@ -23,6 +39,7 @@
   transition: 300ms ease;
 }
 
+.form-buttons-container > button:hover,
 .new-book-button:hover {
   background-color: rgb(208, 208, 208);
   cursor: pointer;
@@ -34,38 +51,125 @@
 
 .card-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 0.75fr));
+  grid-template-columns: repeat(auto-fit, minmax(265px, 0.75fr));
   justify-content: center;
+  column-gap: 2rem;
+  margin: 1rem 2rem 0 2rem;
 }
 
 .card {
   display: grid;
+  justify-self: center;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   min-height: 400px;
+  width: 250px;
   margin: 2rem;
-  border: 2px solid rebeccapurple;
+  border: 2px solid rgb(94, 129, 172);
   border-radius: 5px;
   box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.35);
-  transition: 500ms ease;
-  background-image: url('https://covers.openlibrary.org/b/isbn/9780812511819-L.jpg');
+  transition: 300ms ease;
+  background-image: linear-gradient(
+      rgba(100, 100, 100, 0.75),
+      rgba(100, 100, 100, 0.75)
+    ),
+    url('https://covers.openlibrary.org/b/isbn/9780812511819-L.jpg');
   background-size: cover;
   background-color: rgb(219, 219, 219);
 }
 
 .card:hover {
   scale: 1.05;
-  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.95);
 }
 
 .card > * {
   text-align: center;
+  color: whitesmoke;
 }
 
 .footer {
-  background-color: rgb(255, 185, 100);
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.75);
+  background-color: rgb(235, 203, 139);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.55);
   text-align: center;
   padding: 2rem 0;
   margin-top: 2rem;
+  flex-shrink: 0;
+}
+
+.modal {
+  position: absolute;
+  width: 100%;
+  height: inherit;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-form-container {
+  background-color: #5e81ac;
+  max-width: fit-content;
+  max-height: fit-content;
+  padding: 2rem;
+  margin: 3rem 2rem 0 2rem;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-between; */
+  gap: 1rem;
+  position: relative;
+  z-index: 100;
+}
+
+form > fieldset {
+  display: flex;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+form > fieldset > div {
+  display: flex;
+
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-buttons-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+.form-buttons-container > button:nth-child(1) {
+  background-color: tomato;
+}
+.form-buttons-container > button:nth-child(1):hover {
+  background-color: rgb(234, 75, 47);
+}
+
+.form-buttons-container > button:nth-child(2) {
+  background-color: rgb(64, 255, 80);
+}
+
+.form-buttons-container > button:nth-child(2):hover {
+  background-color: rgb(35, 222, 50);
+}
+
+.form-close-button {
+  width: max-content;
+  border-radius: 50px;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+}
+
+.display-none {
+  display: none;
 }
