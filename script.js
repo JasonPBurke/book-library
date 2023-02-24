@@ -2,9 +2,10 @@
 
 let myLibrary = [];
 
-function Book(title, author, pages, read) {
+function Book(title, author, isbn = '', pages, read) {
   this.title = title;
   this.author = author;
+  this.isbn = isbn;
   this.pages = pages;
   this.read = read;
   this.info = function () {
@@ -15,14 +16,17 @@ function Book(title, author, pages, read) {
 }
 
 // TODO ask for an ISBN and add custom background if provided?
-
+// TODO  ADD NAME ATTRIBUTES TO FORM INPUTS!!!
 const modal = document.querySelector('.modal');
 // console.log(modal);
 
 function buildModal() {
   const modalFormContainer = document.createElement('form');
-  modalFormContainer.setAttribute('action', '#');
-  modalFormContainer.setAttribute('method', 'post');
+  // modalFormContainer.setAttribute('action', '#');
+  modalFormContainer.setAttribute('enctype', 'multipart/form-data');
+  // modalFormContainer.setAttribute('onsubmit', 'return check(event)');
+  modalFormContainer.setAttribute('method', 'POST');
+  modalFormContainer.setAttribute('id', 'modal_form_container');
   modalFormContainer.classList.add('modal-form-container');
 
   const titleLabel = document.createElement('label');
@@ -32,6 +36,7 @@ function buildModal() {
   const titleInput = document.createElement('input');
   titleInput.setAttribute('type', 'text');
   titleInput.setAttribute('id', 'book_title');
+  titleInput.setAttribute('name', 'book_title');
   titleInput.setAttribute('required', '');
 
   const authorLabel = document.createElement('label');
@@ -41,17 +46,17 @@ function buildModal() {
   const authorInput = document.createElement('input');
   authorInput.setAttribute('type', 'text');
   authorInput.setAttribute('id', 'book_author');
+  authorInput.setAttribute('name', 'book_author');
   authorInput.setAttribute('required', '');
 
   const IsbnLabel = document.createElement('label');
   IsbnLabel.setAttribute('for', 'book_Isbn');
-  const IsbnLabelText = document.createTextNode(
-    'ISBN Number --For Autocomplete--'
-  );
+  const IsbnLabelText = document.createTextNode('ISBN Number');
   IsbnLabel.appendChild(IsbnLabelText);
   const IsbnInput = document.createElement('input');
   IsbnInput.setAttribute('type', 'text');
-  IsbnInput.setAttribute('id', 'book_Isbn');
+  IsbnInput.setAttribute('id', 'book_isbn');
+  IsbnInput.setAttribute('name', 'book_isbn');
 
   const pagesLabel = document.createElement('label');
   pagesLabel.setAttribute('for', 'total_pages');
@@ -60,6 +65,7 @@ function buildModal() {
   const pagesInput = document.createElement('input');
   pagesInput.setAttribute('type', 'number');
   pagesInput.setAttribute('id', 'total_pages');
+  pagesInput.setAttribute('name', 'total_pages');
 
   const statusFieldset = document.createElement('fieldset');
   const statusFieldsetLegend = document.createElement('legend');
@@ -77,7 +83,7 @@ function buildModal() {
   readStatusInput.setAttribute('type', 'radio');
   readStatusInput.setAttribute('name', 'read_status');
   readStatusInput.setAttribute('id', 'have_read');
-  readStatusInput.setAttribute('value', 'have_read');
+  readStatusInput.setAttribute('value', true);
 
   const haveNotReadDiv = document.createElement('div');
   const notReadStatusLabel = document.createElement('label');
@@ -88,7 +94,8 @@ function buildModal() {
   notReadStatusInput.setAttribute('type', 'radio');
   notReadStatusInput.setAttribute('name', 'read_status');
   notReadStatusInput.setAttribute('id', 'have_not_read');
-  notReadStatusInput.setAttribute('value', 'have_not_read');
+  notReadStatusInput.setAttribute('value', false);
+  notReadStatusInput.setAttribute('checked', '');
 
   const buttonsDiv = document.createElement('div');
   buttonsDiv.classList.add('form-buttons-container');
@@ -97,13 +104,14 @@ function buildModal() {
   const clearButtonText = document.createTextNode('Clear');
   clearButton.appendChild(clearButtonText);
 
-  const confirmButton = document.createElement('button');
-  const confirmButtonText = document.createTextNode('Confirm');
-  confirmButton.setAttribute('type', 'submit');
-  confirmButton.appendChild(confirmButtonText);
+  const submitButton = document.createElement('button');
+  const submitButtonText = document.createTextNode('Submit');
+  submitButton.setAttribute('type', 'submit');
+  submitButton.setAttribute('id', 'form_submit');
+  submitButton.appendChild(submitButtonText);
 
   buttonsDiv.appendChild(clearButton);
-  buttonsDiv.appendChild(confirmButton);
+  buttonsDiv.appendChild(submitButton);
 
   const closeButton = document.createElement('button');
   closeButton.setAttribute('type', 'button');
@@ -136,9 +144,37 @@ function buildModal() {
 }
 
 buildModal();
-// addNewBook();
+
+function getData(form) {
+  const formData = new FormData(form);
+  // TODO CHECK FOR ISBN VALS AND USE API TO FETCH BOOK COVER IMG
+  values = Object.values(Object.fromEntries(formData));
+  boolVal = values[values.length - 1] === 'true';
+  values[values.length - 1] = boolVal;
+  if (Object.fromEntries(formData).book_isbn) {
+    // TODO call the bookdb api for cover image
+    // TODO and add bgimg to css style for THIS card only(maybe add an id too?)
+    console.log('isbn number found');
+  }
+  isbn = Object.fromEntries(formData).book_isbn;
+  // console.log(`values equals: ${values}`);
+  // console.log(`values.book__isbn equals: ${values.book_isbn}`);
+  addBookToLibrary(new Book(...values));
+
+  // TODO this clears the current book list and rebuilds it instead
+  // TODO of reloading it.  better way??
+  createCards();
+}
+
+const myForm = document.getElementById('modal_form_container');
+myForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  getData(e.target);
+  displayToggle();
+});
 
 function displayToggle() {
+  document.getElementById('modal_form_container').reset();
   modal.classList.toggle('display-none');
 }
 
@@ -157,49 +193,108 @@ function windowOnClick(event) {
 window.addEventListener('click', windowOnClick);
 
 function addBookToLibrary(book) {
+  book.index = myLibrary.length;
   myLibrary.push(book);
 }
 
-function getBookInfo() {
+function removeBook() {
+  const removeBookButtons = document.querySelectorAll('.remove-book-button');
+
+  removeBookButtons.forEach((element) => {
+    element.addEventListener('click', () => {
+      delete myLibrary[element.getAttribute('book_index')];
+      createCards();
+    });
+  });
+}
+
+function createCards() {
+  document.querySelector('.card-container').innerHTML = '';
   const cardContainer = document.querySelector('.card-container');
 
   for (const book of myLibrary) {
+    if (book === undefined) {
+      continue;
+    }
     const card = document.createElement('div');
     card.classList.add('card');
     const cardTitle = document.createElement('h2');
     const titleNode = document.createTextNode(book.title);
     cardTitle.appendChild(titleNode);
     card.appendChild(cardTitle);
+
     const cardAuthor = document.createElement('h3');
     const authorNode = document.createTextNode(book.author);
     cardAuthor.appendChild(authorNode);
     card.appendChild(cardAuthor);
+
     const cardPages = document.createElement('p');
     const pagesNode = document.createTextNode(`Pages: ${book.pages}`);
     cardPages.appendChild(pagesNode);
     card.appendChild(cardPages);
-    const cardCompleted = document.createElement('p');
-    const completedNode = document.createTextNode(
-      `Status: ${book.read ? 'Completed' : 'Not Completed'}`
+
+    const completedTglBtn = document.createElement('button');
+    const completedTglBtnText = document.createTextNode(
+      `${book.read ? 'Read' : 'Not Read'}`
     );
-    cardCompleted.appendChild(completedNode);
-    card.appendChild(cardCompleted);
+    console.log(book.read);
+    console.log(typeof book.read);
+    completedTglBtn.appendChild(completedTglBtnText);
+    completedTglBtn.setAttribute('type', 'button');
+    completedTglBtn.setAttribute('completion-status', book.read);
+    completedTglBtn.classList.add('toggle-read-button');
+    card.appendChild(completedTglBtn);
+
+    const removeBookButton = document.createElement('button');
+    const removeBookButtonText = document.createTextNode('Remove from Library');
+    removeBookButton.appendChild(removeBookButtonText);
+    removeBookButton.setAttribute('type', 'button');
+    removeBookButton.setAttribute('book_index', book.index);
+    removeBookButton.classList.add('remove-book-button');
+    card.appendChild(removeBookButton);
 
     cardContainer.appendChild(card);
   }
+  removeBook();
+  toggleReadStatus();
 }
 
-const theHobbit = new Book('The Hobbit', 'J.R.R Tolkien', 295, false);
 const theEyeOfTheWorld = new Book(
   'The Eye of the World',
   'Robert Jordan',
+  9780547928227,
   832,
   true
 );
-const hyperion = new Book('Hyperion', 'Dan Simmons', 576, true);
-const fallOfHyperion = new Book('Fall of Hyperion', 'Dan Simmons', 784, true);
-const endymion = new Book('Endymion', 'Dan Simmons', 699, true);
-const riseOfEndymion = new Book('Rise of Endymion', 'Dan Simmons', 843, true);
+const theHobbit = new Book(
+  'The Hobbit',
+  'J.R.R Tolkien',
+  9780547928227,
+  295,
+  false
+);
+const hyperion = new Book(
+  'Hyperion',
+  'Dan Simmons',
+  978054453458227,
+  576,
+  true
+);
+const fallOfHyperion = new Book(
+  'Fall of Hyperion',
+  'Dan Simmons',
+  9780547928227,
+  784,
+  true
+);
+const endymion = new Book('Endymion', 'Dan Simmons', 2343547928227, 699, true);
+const riseOfEndymion = new Book(
+  'Rise of Endymion',
+  'Dan Simmons',
+  6786705478227,
+  843,
+  true
+);
 
 addBookToLibrary(theHobbit);
 addBookToLibrary(theEyeOfTheWorld);
@@ -208,4 +303,23 @@ addBookToLibrary(fallOfHyperion);
 addBookToLibrary(endymion);
 addBookToLibrary(riseOfEndymion);
 
-getBookInfo();
+createCards();
+
+function toggleReadStatus() {
+  const readButtons = document.querySelectorAll('[completion-status]');
+
+  // TODO update actual Book Object, run createCards
+  readButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      title = btn.previousSibling.previousSibling.previousSibling.innerHTML;
+      readVal = btn.getAttribute('completion-status') === 'true';
+      newReadVal = readVal === true ? false : true;
+      myLibrary.forEach((book) => {
+        if (book.title === title) {
+          book.read = newReadVal;
+        }
+      });
+      createCards();
+    });
+  });
+}
