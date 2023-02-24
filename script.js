@@ -2,12 +2,15 @@
 
 let myLibrary = [];
 
-function Book(title, author, isbn = '', pages, read) {
+function Book(title, author, isbn = null, pages, read, cover = null) {
   this.title = title;
   this.author = author;
   this.isbn = isbn;
   this.pages = pages;
   this.read = read;
+  isbn
+    ? (this.cover = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`)
+    : (this.cover = './images/generic-book-cover.jpg');
   this.info = function () {
     return `${title} by ${author}, ${pages} pages, ${
       read ? 'Completed' : 'Not Completed'
@@ -66,6 +69,7 @@ function buildModal() {
   pagesInput.setAttribute('type', 'number');
   pagesInput.setAttribute('id', 'total_pages');
   pagesInput.setAttribute('name', 'total_pages');
+  pagesInput.setAttribute('required', '');
 
   const statusFieldset = document.createElement('fieldset');
   const statusFieldsetLegend = document.createElement('legend');
@@ -151,18 +155,9 @@ function getData(form) {
   values = Object.values(Object.fromEntries(formData));
   boolVal = values[values.length - 1] === 'true';
   values[values.length - 1] = boolVal;
-  if (Object.fromEntries(formData).book_isbn) {
-    // TODO call the bookdb api for cover image
-    // TODO and add bgimg to css style for THIS card only(maybe add an id too?)
-    console.log('isbn number found');
-  }
-  isbn = Object.fromEntries(formData).book_isbn;
-  // console.log(`values equals: ${values}`);
-  // console.log(`values.book__isbn equals: ${values.book_isbn}`);
+
   addBookToLibrary(new Book(...values));
 
-  // TODO this clears the current book list and rebuilds it instead
-  // TODO of reloading it.  better way??
   createCards();
 }
 
@@ -218,6 +213,7 @@ function createCards() {
     }
     const card = document.createElement('div');
     card.classList.add('card');
+    card.style.backgroundImage = `linear-gradient( rgba(0, 0, 0, 0.5), rgba(100, 100, 100, 0.75)), url(${book.cover})`;
     const cardTitle = document.createElement('h2');
     const titleNode = document.createTextNode(book.title);
     cardTitle.appendChild(titleNode);
@@ -237,8 +233,6 @@ function createCards() {
     const completedTglBtnText = document.createTextNode(
       `${book.read ? 'Read' : 'Not Read'}`
     );
-    console.log(book.read);
-    console.log(typeof book.read);
     completedTglBtn.appendChild(completedTglBtnText);
     completedTglBtn.setAttribute('type', 'button');
     completedTglBtn.setAttribute('completion-status', book.read);
@@ -262,36 +256,30 @@ function createCards() {
 const theEyeOfTheWorld = new Book(
   'The Eye of the World',
   'Robert Jordan',
-  9780547928227,
+  9780812511819,
   832,
   true
 );
 const theHobbit = new Book(
   'The Hobbit',
   'J.R.R Tolkien',
-  9780547928227,
+  9781782012696,
   295,
   false
 );
-const hyperion = new Book(
-  'Hyperion',
-  'Dan Simmons',
-  978054453458227,
-  576,
-  true
-);
+const hyperion = new Book('Hyperion', 'Dan Simmons', 9781455802593, 576, true);
 const fallOfHyperion = new Book(
   'Fall of Hyperion',
   'Dan Simmons',
-  9780547928227,
+  9789993530466,
   784,
   true
 );
-const endymion = new Book('Endymion', 'Dan Simmons', 2343547928227, 699, true);
+const endymion = new Book('Endymion', 'Dan Simmons', '0553572946', 699, true);
 const riseOfEndymion = new Book(
   'Rise of Endymion',
   'Dan Simmons',
-  6786705478227,
+  '055310652X',
   843,
   true
 );

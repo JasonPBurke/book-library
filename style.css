@@ -73,33 +73,20 @@ body {
   margin: 2rem;
   border: 2px solid rgb(94, 129, 172);
   border-radius: 5px;
-  box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.35);
   transition: 300ms ease;
-  background-image: linear-gradient(
+  /* background-image: linear-gradient(
       rgba(100, 100, 100, 0.75),
       rgba(100, 100, 100, 0.75)
     ),
-    url('https://covers.openlibrary.org/b/isbn/9780812511819-L.jpg');
+    url('https://covers.openlibrary.org/b/isbn/9780812511819-L.jpg'); */
   background-size: cover;
   background-color: rgb(219, 219, 219);
-}
-
-.card:hover {
-  scale: 1.05;
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.95);
 }
 
 .card > * {
   text-align: center;
   color: whitesmoke;
-}
-
-button[completion-status='false'] {
-  background-color: rgb(255, 82, 82);
-}
-
-button[completion-status='true'] {
-  background-color: rgb(70, 197, 70);
 }
 
 .footer {
@@ -125,7 +112,7 @@ button[completion-status='true'] {
 }
 
 .modal-form-container {
-  background-color: rgb(150, 186, 229);
+  background-color: rgb(94, 129, 172);
   max-width: fit-content;
   max-height: fit-content;
   padding: 2rem;
@@ -161,19 +148,24 @@ form > fieldset > div > * {
   padding: 2rem 0;
 }
 
+button[completion-status='false'],
 .form-buttons-container > button:nth-child(1) {
   background-color: tomato;
 }
+
+button[completion-status='false']:hover,
 .form-buttons-container > button:nth-child(1):hover {
   background-color: rgb(234, 75, 47);
   scale: 1.05;
   transition: 200ms ease;
 }
 
+button[completion-status='true'],
 .form-buttons-container > button:nth-child(2) {
   background-color: rgb(64, 255, 80);
 }
 
+button[completion-status='true']:hover,
 .form-buttons-container > button:nth-child(2):hover {
   background-color: rgb(35, 222, 50);
   scale: 1.05;
